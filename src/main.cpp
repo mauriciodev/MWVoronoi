@@ -83,13 +83,15 @@ TeLayer * createLayer(const std::string& name, TeDatabase* db, TeProjection* pro
         return NULL;
 
     TeTable& attrTable = layer->attrTables()[0];
+    std::string sid; //= Te2String(i);
     for(unsigned int i = 0; i < ps.size(); ++i)
     {
-        std::string sid = Te2String(i);
-        ps[i].objectId(sid);
-        TeTableRow row;
-        row.push_back(sid);
-        attrTable.add(row);
+        if (sid!=ps[i].objectId()) {
+            sid=ps[i].objectId();
+            TeTableRow row;
+            row.push_back(sid);
+            attrTable.add(row);
+        }
     }
 
     if(!layer->saveAttributeTable(attrTable))

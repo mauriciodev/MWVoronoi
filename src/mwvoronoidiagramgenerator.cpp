@@ -151,6 +151,7 @@ bool mwVoronoiDiagramGenerator::generateVoronoi(float *xValues, float *yValues, 
 }
 
 bool mwVoronoiDiagramGenerator::generateVoronoi2() {
+    int polId=0;
     TePolygonSet *area=new TePolygonSet;
     TePolygonSet *circleSet,*saida,*region;
     TePolygon *circle;
@@ -160,10 +161,8 @@ bool mwVoronoiDiagramGenerator::generateVoronoi2() {
         //loop for every generator
         region=new TePolygonSet();
         region->copyElements(*area); //region of dominance, starts as the whole area minus the already dominated areas
-        int n=0;
         for (vector<wsite>::iterator j=this->siteList->begin();j!=this->siteList->end();++j) {
             //loop for every generator not analised yet;
-            n++;
             if (i!=j) {
                 //every arc of the region is a piece of the appolonius circle between the two generators.
                 circle=apolonio(*i,*j);
@@ -185,11 +184,16 @@ bool mwVoronoiDiagramGenerator::generateVoronoi2() {
                 delete circleSet;
             }
         }
-        cout <<n<<endl;
+        //cout <<polId<<endl;
         //when finished j, one dominance is done. let's write it out.
         TePolygon t;
+        string objectId;
         if (region->size()>0) {
+            stringstream ss;
+            ss<<polId;
             for (TePolygonSet::iterator pi=region->begin(); pi!=region->end();++pi) {
+                pi->geomId(polId);
+                pi->objectId(ss.str());
                 this->domList->add(*pi);
             }
             /*saida=new TePolygonSet();
@@ -199,6 +203,7 @@ bool mwVoronoiDiagramGenerator::generateVoronoi2() {
             saida=NULL;*/
 
         }
+        polId++;
         delete region;
     }
     if (this->domList->size()>0) {

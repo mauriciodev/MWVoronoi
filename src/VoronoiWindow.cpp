@@ -498,13 +498,16 @@ TeLayer * VoronoiWindow::createLayer(const std::string& name, TeDatabase* db, Te
         return NULL;
 
     TeTable& attrTable = layer->attrTables()[0];
+    std::string sid; //= Te2String(i);
     for(unsigned int i = 0; i < ps.size(); ++i)
     {
-        std::string sid = Te2String(i);	
-		ps[i].objectId(sid);
-		TeTableRow row;
-		row.push_back(sid);
-		attrTable.add(row);
+        if (sid=="") sid=Te2String(i); //in case there is no id, create one.
+        if (sid!=ps[i].objectId()) { //in case the id is equal to the last one, it's a multipolygon
+            sid=ps[i].objectId();
+            TeTableRow row;
+            row.push_back(sid);
+            attrTable.add(row);
+        }
     }
 
     if(!layer->saveAttributeTable(attrTable))
