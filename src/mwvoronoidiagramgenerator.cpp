@@ -18,62 +18,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 #include "mwvoronoidiagramgenerator.h"
-//************
-//Classe wsite
-//************
-
-wsite::wsite() {
-    /*! default constructor with coordinates and weights equals zero*/
-    this->w=0;
-    this->x=0;
-    this->y=0;
-}
-
-wsite::wsite(double x, double y, double w) {
-    /*! Default constructor that loads x,y and weight.*/
-    this->w=w;
-    this->x=x;
-    this->y=y;
-
-}
-
-
-wsite::~wsite() {
-
-}
-
-double wsite::distance(TePoint p1) {
-    /*! Computes the weighted distance from a point p1 to the site. */
-    return distance(p1.elem().x(),p1.elem().y());
-}
-
-double wsite::distance(double x, double y) {
-    /*! Computes the weighted distance from a point with coordinates (x,y) to the site. */
-    return eDistance(x,y)/this->w;
-}
-
-double wsite::eDistance(double x, double y) {
-    /*! Computes the euclidean distance from the site to a point with coordinates (x,y).*/
-    return sqrt(pow(x-this->x,2) + pow(y-this->y,2));
-}
-double wsite::eDistance(wsite p) {
-    /*! Computes the euclidean distance to another site.*/
-    return this->eDistance(p.x,p.y);
-}
-
-
-TePoint *wsite::asPoint() {
-    TePoint *p = new TePoint(this->x,this->y);
-    return p;
-}
-
-std::string wsite::AsString() {
-    stringstream ss (stringstream::in | stringstream::out);
-    ss<<"x:" << FloatToStr(this->x) << " y:" << FloatToStr(this->y) << " w:" << FloatToStr(this->w);
-    return ss.str();
-}
-
-
 //********************************
 //Classe mwVoronoiDiagramGenerator
 //********************************
@@ -196,11 +140,6 @@ bool mwVoronoiDiagramGenerator::generateVoronoi2() {
                 pi->objectId(ss.str());
                 this->domList->add(*pi);
             }
-            /*saida=new TePolygonSet();
-            TeOVERLAY::TeDifference(*area,*region,*saida);
-            delete area;
-            area=saida;
-            saida=NULL;*/
 
         }
         polId++;

@@ -99,7 +99,7 @@ void VoronoiWindow::helpPushButton_clicked()
 
 void VoronoiWindow::okPushButton_clicked()
 {
-    std::string layerName = layerNameLineEdit->text();	
+    std::string layerName = layerNameLineEdit->text().utf8();	
 	if(layerName.empty())
 	{
 		QMessageBox::information(this, tr("Information"), tr("Please, define a name to result Layer."));

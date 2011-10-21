@@ -23,7 +23,8 @@ string VectorToString (const vector<string> & v,
 float StrToFloat (string);
 std::string FloatToStr(double);
 
-
+//For Each item in a STL container
+#define for_each(m_itname,m_container) for( typeof(m_container.begin()) m_itname=m_container.begin() ; m_itname!=m_container.end() ; m_itname++ )
 
 
 #endif // STL_H

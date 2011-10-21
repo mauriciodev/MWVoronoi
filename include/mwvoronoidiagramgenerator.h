@@ -25,29 +25,14 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
 #include <iostream>
 #include <fstream>
 #include <math.h>
-#include "stl.h"
-
 
 #include <TeGeometry.h>
 #include <TeBufferRegion.h>
 #include <TeOverlay.h>
 
+#include "stl.h"
+#include "wsite.h"
 
-class wsite
-{
-public:
-    wsite();
-    wsite(double x, double y, double w);
-    wsite(std::vector<std::string>);
-    ~wsite();
-    std::string AsString();
-    TePoint *asPoint();
-    double distance(TePoint p1); //weighted distance
-    double distance(double x, double y); //weighted distance
-    double eDistance(double x, double y); //euclidean distance
-    double eDistance(wsite p); //euclidean distance
-    double w,x,y;
-};
 
 class mwVoronoiDiagramGenerator//: VoronoiDiagramGenerator
 {

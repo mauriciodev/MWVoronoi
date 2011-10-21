@@ -4,6 +4,8 @@
 #include "TeAsciiFile.h"
 #include "mwvoronoidiagramgenerator.h"
 #include "TeGeoProcessingFunctions.h"
+#include "tecircle.h"
+#include <QtTest>
 
 TeTheme * createTheme(string layername, TeDatabase *db, TeView *view) {
     TeLayer* layer = new TeLayer(layername,db);
@@ -187,14 +189,7 @@ void testeAlg() {
     delete mwvg;
 }
 
-
-
-int main()
-{
-
-    //testeAlg();
-    //TePolygon * circle=mwvg->apolonio(wsite(0,0,1),wsite(10,0,2));
-
+void runTest01() {
     mwVoronoiDiagramGenerator* mwvg= new mwVoronoiDiagramGenerator();
     float * x,*y,*w;
     int n=100;
@@ -249,17 +244,79 @@ int main()
     cout<<ps.size()<<endl;
 
     string name="teste1";
-    TeLayer * diagramLayer =createLayer(name,db,layer->projection(),ps);
+    //TeLayer * diagramLayer =createLayer(name,db,layer->projection(),ps);
     //clipping the result layer
     //delete diagramLayer;
     //TeLayer * diagramLayer=new TeLayer("t1");
 
     //TeTheme* theme=getTheme(db,"ConsultaUrg09");
     //copyAttributes(diagramLayer,theme,db);
+}
 
+class TestCircles: public QObject {
+    Q_OBJECT
+private slots:
+
+};
+
+bool testCircleIntersection() {
+    Circle *t1 =  new Circle(1,0,0);
+    Circle *t2 =  new Circle(1,1.5,0);
+
+    cout<< "First circle: "<< t1->asString() <<endl;
+    std::vector<xy> * res=t1->intersection(t2);
+    if (res!=NULL) {
+        cout << "Cartesian intersection" <<endl;
+        cout << "Intersection 1: "<<(*res)[0].x << "," << (*res)[0].y <<endl;
+        cout << "Intersection 2: "<<(*res)[1].x << "," << (*res)[1].y <<endl;
+    }
+    std::vector<double> * res2=t1->polarIntersection(t2);
+    if (res2!=NULL) {
+        cout << "Polar intersection" <<endl;
+        cout << "Intersection 1: radians:"<<(*res2)[0]<<" : "<< t1->polarToXy((*res2)[0]).x <<","<< t1->polarToXy((*res2)[0]).y << endl;
+        cout << "Intersection 2: radians:"<<(*res2)[1]<<" : "<< t1->polarToXy((*res2)[1]).x <<","<< t1->polarToXy((*res2)[1]).y << endl;
+    }
+    return true;
 }
 
 
 
+class TestStress: public QObject
+{
+    Q_OBJECT
+public:
+    float * newRandomArray(int,double,double);
+private slots:
+    void randomTest();
+};
+float * TestStress::newRandomArray(int n, double min, double max) {
+    float *arr=new float[n];
+}
+void TestStress::randomTest() {
+    srand((unsigned)time(0));
+    //tested sizes
+    for (int n=10; n<10000;n*=10) {
+        //many samples for each size
+        for (int m; m<10;m++) {
+            float * x=newRandomArray(n,0,5000);
+            float * y=newRandomArray(n,0,5000);
+            float * w=newRandomArray(n,0,10);
+        }
+    }
+}
 
+
+int main()
+{
+
+    //runTest01();
+    //testCircleIntersection();
+    //mwvStressTest();
+
+
+}
+
+
+QTEST_MAIN(TestStress)
+#include "testqstring.moc"
 
