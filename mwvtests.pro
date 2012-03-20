@@ -1,10 +1,11 @@
-CONFIG += qtestlib debug
+CONFIG += qtestlib #debug
 TEMPLATE = app
 TARGET =
 
 INCLUDEPATH += ./include
 DEPENDPATH += ./bin
-
+DESTDIR +=./bin
+OBJECTS_DIR+=./obj
 
 SOURCES += \
     ./src/stl.cpp \
@@ -15,6 +16,6 @@ SOURCES += \
 
 HEADERS += \
     ./include/stl.h \
-    ./include/circle.h \
+    ./include/circle.h
     #../include/testqstring.h
     #./include/mwvoronoidiagramgenerator.h

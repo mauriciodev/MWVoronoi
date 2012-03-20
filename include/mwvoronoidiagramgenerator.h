@@ -45,18 +45,18 @@ public:
     void readSites(const char * filename);
     void writeCSV(const char * filename);
 
-
+    /*! TODO Clips the visible area using the breakLine's line of sight */
+    bool visibility(TeLine2D & breakLine, TePolygon &visibleArea);
     bool isMinimumDistance(TePoint x, double d);
-    bool generateVoronoi(float *xValues, float *yValues,  float *wValues, int numPoints, double minX, double maxX, double minY, double maxY);
+    bool generateVoronoi(float *xValues, float *yValues,  float *wValues, int numPoints, double minX, double maxX, double minY, double maxY, TeLineSet & lineSet=NULL);
     bool generateVoronoi2();
     bool generateVoronoi();
-    /*!
-        Método que retorna um polígono de nsides lados representando o círculo de apolônio formado entre dois pontos geradores ponderados.
-    */
+    
+        
+    
+    /*! Método que retorna um polígono de nsides lados representando o círculo de apolônio formado entre dois pontos geradores ponderados. */
     TePolygon *apolonio(wsite s1, wsite s2, int nsides=360);
-    /*!
-      Retorna um polígono retangular a partir das coordenadas de canto. Utilizada para calcular a área máxima do diagrama.
-    */
+    /*! Retorna um polígono retangular a partir das coordenadas de canto. Utilizada para calcular a área máxima do diagrama. */
     TePolygon *boxFromExtent(double xmin, double xmax,double ymin,double ymax);
     TePolygonSet *domList;
 private:

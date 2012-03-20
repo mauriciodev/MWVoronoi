@@ -13,6 +13,46 @@ double xy::distance(xy p2) {
     return sqrt(x2+y2);
 }
 
+xy & xy::operator-=(const xy &p2) {
+    this->x-=p2.x;
+    this->y-=p2.y;
+    return *this;
+}
+xy xy::operator-(const xy &p2) {
+    xy res=(*this);
+    res-=p2;
+    return res;
+}
+
+xy xy::operator+(const xy &p2) {
+    xy res=(*this);
+    res.x+=p2.x;
+    res.y+=p2.y;
+    return res;
+}
+
+double xy::operator*(const xy &p2) {
+    return (this->x * p2.x + this->y * p2.y);
+}
+
+xy xy::operator*(const double &d) {
+    xy res=(*this);
+    res.x*=d;
+    res.y*=d;
+    return res;
+}
+
+line::line(xy p0, xy p1) {
+    this->p0=p0;
+    this->p1=p1;
+}
+
+line::line(double p0x,double p0y,double p1x,double p1y) {
+    this->p0.x=p0x;
+    this->p0.y=p0y;
+    this->p1.x=p1x;
+    this->p1.y=p1y;
+}
 
 
 Circle::Circle() : CircularArc() {
@@ -120,13 +160,46 @@ bool CircularArc::polarIntersection(CircularArc *c2, std::vector<double> &inters
     return true;
 }
 
-bool CircularArc::intersection(CircularArc *c2, std::vector<xy> &intersections) {
+bool CircularArc::intersection(line l, std::vector<xy> & intersections) {
+    xy u=l.p1 - l.p0;
+    xy p0c= l.p0-this->c;
+    double a=u*u;
+    double b=2*(u*p0c);
+    double c=p0c*p0c - this->r*this->r;
+    double d=b*b-4*a*c;
+    if (d>=0) {
+        double t1=( -b+sqrt(d) )/(2*a);
+        double t2=( -b-sqrt(d) )/(2*a);
+        xy res1,res2;
+        res1=l.p0+u*t1;
+        if (this->touches(res1) && (t1>=0) && (t1<=1))
+            intersections.push_back(res1);
+        if (t1!=t2) {
+            res2=l.p0+u*t2;
+            if (this->touches(res2)  && (t2>=0) && (t2<=1) )
+                intersections.push_back(res2);
+        }
+
+    }
+    if (intersections.size()>0) {
+        return true;
+    } else {
+        return false;
+    }
+
+    //double sinTheta=
+    //distance from circle to line < radius
+
+
+}
+
+bool CircularArc::intersection(const CircularArc &c2, std::vector<xy> &intersections) {
     double x1=this->c.x;
-    double x2=c2->c.x;
+    double x2=c2.c.x;
     double y1=this->c.y;
-    double y2=c2->c.y;
+    double y2=c2.c.y;
     double r1=this->r;
-    double r2=c2->r;
+    double r2=c2.r;
     double d=sqrt(pow(x1-x2, 2)+pow(y1-y2, 2));
     if ((d> r1 + r2 ) || ( fabs(r1 - r2) > d)) {
         return false;
@@ -149,6 +222,16 @@ bool CircularArc::intersection(CircularArc *c2, std::vector<xy> &intersections) 
         intersections.push_back(res2[1]);
     return true;
 }
+
+bool CircularArc::touches(xy &p) {
+    double rad1=this->xyToPolar(p);
+    if ((rad1>this->startAngle) && (rad1 < this->endAngle )) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 bool CircularArc::getAproximatedCircleArc(std::vector<xy> & coordinates,int npoints) {
     double step=(this->endAngle-this->startAngle)/(npoints-1);
     for (int i=0;i<npoints;i++) {
@@ -190,7 +273,15 @@ CircularArc::CircularArc(double r, double cx, double cy, double startAngle, doub
     this->endAngle=endAngle;
 }
 
+CircularArc::CircularArc(xy p0, xy p1, xy p2) {
+    //find r and c
+    //this->r=r;
+    //this->c.x=cx;
+    //this->c.y=cy;
 
+    this->startAngle=this->xyToPolar(p0);
+    this->endAngle=this->xyToPolar(p2);
+}
 
 
 CircularArc::~CircularArc() {
@@ -222,11 +313,11 @@ xy ST_CircularString::getVertex(unsigned int n) {
 }
 
 bool ST_CircularString::clip(Circle c) {
-    int nintersections=0;
+    //int nintersections=0;
     std::vector<double> intersections;
     //traverses this strings' arcs finding intersections.
     for_each(arc, this->arcList) {
-        double startAngle=NULL;
+        double startAngle=0.;
         arc->polarIntersection(&c,intersections);
         if (intersections.size()==2) {//found two intersections, this arc must be broken in 3 pieces.
             double oldEndAngle=arc->endAngle;
@@ -255,6 +346,7 @@ bool ST_CircularString::clip(Circle c) {
 
         }
     }
+    return true;
 }
 
 ST_CurvePolygon::ST_CurvePolygon() {

@@ -80,7 +80,7 @@ TePolygon * mwVoronoiDiagramGenerator::boxFromExtent(double xmin, double xmax,do
     return p;
 }
 
-bool mwVoronoiDiagramGenerator::generateVoronoi(float *xValues, float *yValues,  float *wValues, int numPoints,double minX, double maxX, double minY, double maxY) {
+bool mwVoronoiDiagramGenerator::generateVoronoi(float *xValues, float *yValues,  float *wValues, int numPoints,double minX, double maxX, double minY, double maxY, TeLineSet & breakLines) {
     this->areaBox=boxFromExtent(minX*0.999,maxX*1.001,minY*0.999,maxY*1.001);
     //carregando os geradores:
     wsite * site;

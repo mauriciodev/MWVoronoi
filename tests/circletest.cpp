@@ -11,6 +11,8 @@ private slots:
     void toUpper();
     void toUpper_data();
     void stressTest();
+    void intersectLine();
+    void intersectLine_data();
     void CircleIntersectionCount();
     void CircleIntersectionCount_data();
     void CircleString();
@@ -65,19 +67,19 @@ void CircleTest::CircleIntersectionCount() {
     QFETCH(double, r1);
     QFETCH(double, r2);
     QFETCH(int, count);
-    Circle *t1 =  new Circle(r1,x1,y1);
-    Circle *t2 =  new Circle(r2,x2,y2);
+    Circle t1(r1,x1,y1);
+    Circle t2(r2,x2,y2);
 
     //cout<< "First circle: "<< t1->asString() <<endl;
     std::vector<xy> res;
-    t1->intersection(t2,res);
+    t1.intersection(t2,res);
     QCOMPARE((int)res.size(),count);
 
     //std::vector<double> res2;
     //t1->polarIntersection(t2,res2);
     //QCOMPARE(res2.size(),count);
-    delete t1;
-    delete t2;
+    //delete t1;
+    //delete t2;
 }
 
 void CircleTest::CircleString() {
@@ -135,6 +137,42 @@ void CircleTest::splitArc() {
     cs.clip(c);
 }
 
+void CircleTest::intersectLine_data() {
+    QTest::addColumn<double>("r");
+    QTest::addColumn<double>("cx");
+    QTest::addColumn<double>("cy");
+    QTest::addColumn<double>("startRad");
+    QTest::addColumn<double>("endRad");
+    QTest::addColumn<double>("p0x");
+    QTest::addColumn<double>("p0y");
+    QTest::addColumn<double>("p1x");
+    QTest::addColumn<double>("p1y");
+    QTest::addColumn<int>("nIntersections");
+    QTest::newRow("Intersect") << 1. << 0. << 0. << 0. << (pi/2) << 0. << 0. << 3. << 3. <<1;
+    QTest::newRow("Disjoint segment") << 1. << 0. << 0. << 0. << (pi/2) << 2. << 2. << 3. << 3. <<0;
+    QTest::newRow("Disjoint line") << 1. << 0. << 0. << 0. << (pi/2) << 2. << 3. << 3. << 2. <<0;
+
+}
+
+void CircleTest::intersectLine() {
+    QFETCH(double,r);
+    QFETCH(double,cx);
+    QFETCH(double,cy);
+    QFETCH(double,startRad);
+    QFETCH(double,endRad);
+    CircularArc arc(r,cx,cy,startRad,endRad);
+    QFETCH(double,p0x);
+    QFETCH(double,p0y);
+    QFETCH(double,p1x);
+    QFETCH(double,p1y);
+    QFETCH(int, nIntersections);
+    line l(p0x,p0y,p1x,p1y);
+    std::vector<xy> intersections;
+    arc.intersection(l,intersections);
+    QCOMPARE(intersections.size(),(unsigned int)nIntersections);
+    //QCOMPARE(intersections[.size()]0],);
+}
+
 void CircleTest::stressTest() {
     srand((unsigned)time(0));
     //tested sizes
@@ -159,12 +197,12 @@ float * CircleTest::newRandomArray(int n, double min, double max) {
 
 
 
+QTEST_MAIN(CircleTest)
+#include "circletest.moc"
 
-#include "../bin/circletest.moc"
-//QTEST_MAIN(CircleTest)
-int main(void){
+/*int main(void){
     CircleTest * test = new CircleTest();
 
     QTest::qExec(test);
     delete test;
-}
+}*/

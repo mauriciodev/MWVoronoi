@@ -27,6 +27,7 @@ std::string FloatToStr(double);
 #define for_each(m_itname,m_container) for( typeof(m_container.begin()) m_itname=m_container.begin() ; m_itname!=m_container.end() ; m_itname++ )
 
 
+
 #endif // STL_H
 // disable warnings about long names
 
